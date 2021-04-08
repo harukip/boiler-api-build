@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pandas
+beautifulsoup4
+tensorflow_hub
+sentencepiece
+sklearn
+tqdm
+python-multipart

@@ -1,0 +1,3 @@
+[submodule "boilerplate-api/boilerplate"]
+	path = boilerplate-api/boilerplate
+	url = https://github.com/harukip/multitask-boilerplate-removal.git
