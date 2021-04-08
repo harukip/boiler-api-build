@@ -17,7 +17,7 @@ boilerplateModel = model.MCModel(
     mc_step=256
 )
 htmlProcesser = HTML2df()
-boilerplateModel.load_weights("ZH_dev/best_macro_f1/")
+boilerplateModel.load_weights("model_checkpoint/best_macro_f1/")
 
 @app.get("/")
 def root():
