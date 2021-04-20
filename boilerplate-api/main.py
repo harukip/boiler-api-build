@@ -1,9 +1,13 @@
 import tensorflow as tf
 import pandas as pd
 from fastapi import FastAPI, UploadFile, File
+from pydantic import BaseModel
 from boilerplate import model
 from boilerplate.module.html2df import HTML2df
 from boilerplate.utils import util
+
+class Html(BaseModel):
+    text: str
 
 app = FastAPI()
 util.limit_gpu()
@@ -26,6 +30,21 @@ def root():
 @app.post("/predict/")
 async def predict(file_input: UploadFile = File(...)):
     htmlstr = await file_input.read()
+    boilerplateModel.mc_step = 256
+    try:
+        df = htmlProcesser.convert2df(htmlstr)
+        tag_raw, content_raw, _ = util.preprocess_df(df, boilerplateModel, False)
+        tag_input = tf.expand_dims(tag_raw, 0)
+        content_input = tf.expand_dims(content_raw, 0)
+        p, _, _, _ = boilerplateModel.MC_sampling(tag_input, content_input)
+        df['label'] = list(tf.reshape(tf.argmax(p, -1), -1))
+    except Exception as e:
+        return e
+    return {'data': list(df[df['label']==1]['content'])}
+
+@app.post("/predict_json/")
+async def predict(html: Html):
+    htmlstr = html.text
     boilerplateModel.mc_step = 256
     try:
         df = htmlProcesser.convert2df(htmlstr)
