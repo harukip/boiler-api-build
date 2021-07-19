@@ -39,7 +39,7 @@ async def predict(file_input: UploadFile = File(...)):
         tag_raw, content_raw, _ = util.preprocess_df(df, boilerplateModel, False)
         tag_input = tf.expand_dims(tag_raw, 0)
         content_input = tf.expand_dims(content_raw, 0)
-        p, _, _, _ = boilerplateModel.MC_sampling(tag_input, content_input)
+        p, _ = boilerplateModel.MC_sampling(tag_input, content_input)
         df['label'] = list(tf.reshape(tf.argmax(p, -1), -1))
     except Exception as e:
         return e
@@ -54,7 +54,7 @@ async def predict(html: Html):
         tag_raw, content_raw, _ = util.preprocess_df(df, boilerplateModel, False)
         tag_input = tf.expand_dims(tag_raw, 0)
         content_input = tf.expand_dims(content_raw, 0)
-        p, _, _, _ = boilerplateModel.MC_sampling(tag_input, content_input)
+        p, _ = boilerplateModel.MC_sampling(tag_input, content_input)
         df['label'] = list(tf.reshape(tf.argmax(p, -1), -1))
     except Exception as e:
         return e
