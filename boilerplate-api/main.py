@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from boilerplate import model
 from boilerplate.module.html2df import HTML2df
 from boilerplate.utils import util
-from boilerplate.module.dataloader import DataLoader
+from module.dataloader import DataLoader
 
 class Html(BaseModel):
     text: str
