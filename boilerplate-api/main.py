@@ -43,10 +43,9 @@ def root():
 @app.post("/predict/")
 async def predict(file_input: UploadFile = File(...)):
     htmlstr = await file_input.read()
-    boilerplateModel.mc_step = 256
     try:
         df = htmlProcesser.convert2df(htmlstr)
-        tag_raw, content_raw, _ = util.preprocess_df(args, df, dataLoader, False, 1)
+        tag_raw, content_raw, _ = util.preprocess_df(args, df, dataLoader, False, 0)
         tag_input = tf.expand_dims(tag_raw, 0)
         content_input = tf.expand_dims(content_raw, 0)
         p, _ = boilerplateModel.MC_sampling(tag_input, content_input)
@@ -58,10 +57,9 @@ async def predict(file_input: UploadFile = File(...)):
 @app.post("/predict_json/")
 async def predict(html: Html):
     htmlstr = html.text
-    boilerplateModel.mc_step = 256
     try:
         df = htmlProcesser.convert2df(htmlstr)
-        tag_raw, content_raw, _ = util.preprocess_df(args, df, dataLoader, False, 1)
+        tag_raw, content_raw, _ = util.preprocess_df(args, df, dataLoader, False, 0)
         tag_input = tf.expand_dims(tag_raw, 0)
         content_input = tf.expand_dims(content_raw, 0)
         p, _ = boilerplateModel.MC_sampling(tag_input, content_input)
