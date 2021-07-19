@@ -17,6 +17,7 @@ class Arg():
         self.val_folder = ""
         self.test_folder = ""
         self.word = False
+        self.tag_rep=0
 args = Arg()
 app = FastAPI()
 util.limit_gpu()
