@@ -5,10 +5,19 @@ from pydantic import BaseModel
 from boilerplate import model
 from boilerplate.module.html2df import HTML2df
 from boilerplate.utils import util
+from boilerplate.module.dataloader import DataLoader
 
 class Html(BaseModel):
     text: str
-
+class Arg():
+    def __init__(self):
+        self.label_size = 2
+        self.batch = 1
+        self.train_folder = ""
+        self.val_folder = ""
+        self.test_folder = ""
+        self.word = False
+args = Arg()
 app = FastAPI()
 util.limit_gpu()
 boilerplateModel = model.MCModel(
@@ -23,6 +32,7 @@ boilerplateModel = model.MCModel(
     tag=0,
     emb_init=0
 )
+dataLoader = DataLoader(args, boilerplateModel)
 htmlProcesser = HTML2df()
 boilerplateModel.load_weights("model_checkpoint/combine_model/")
 
@@ -36,7 +46,7 @@ async def predict(file_input: UploadFile = File(...)):
     boilerplateModel.mc_step = 256
     try:
         df = htmlProcesser.convert2df(htmlstr)
-        tag_raw, content_raw, _ = util.preprocess_df(df, boilerplateModel, False)
+        tag_raw, content_raw, _ = util.preprocess_df(args, df, dataLoader, False, 1)
         tag_input = tf.expand_dims(tag_raw, 0)
         content_input = tf.expand_dims(content_raw, 0)
         p, _ = boilerplateModel.MC_sampling(tag_input, content_input)
@@ -51,7 +61,7 @@ async def predict(html: Html):
     boilerplateModel.mc_step = 256
     try:
         df = htmlProcesser.convert2df(htmlstr)
-        tag_raw, content_raw, _ = util.preprocess_df(df, boilerplateModel, False)
+        tag_raw, content_raw, _ = util.preprocess_df(args, df, dataLoader, False, 1)
         tag_input = tf.expand_dims(tag_raw, 0)
         content_input = tf.expand_dims(content_raw, 0)
         p, _ = boilerplateModel.MC_sampling(tag_input, content_input)
