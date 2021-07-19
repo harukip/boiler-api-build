@@ -18,10 +18,13 @@ boilerplateModel = model.MCModel(
     lr=1e-3,
     lstm_dropout=0.01,
     dropout=0.1,
-    mc_step=256
+    mc_step=256,
+    aux=1,
+    tag=0,
+    emb_init=0
 )
 htmlProcesser = HTML2df()
-boilerplateModel.load_weights("model_checkpoint/best_macro_f1/")
+boilerplateModel.load_weights("model_checkpoint/combine_model/")
 
 @app.get("/")
 def root():
